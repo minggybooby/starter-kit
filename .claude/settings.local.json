@@ -4,7 +4,13 @@
       "WebSearch",
       "Bash(npx:*)",
       "Bash(printf \"No\\\\nNo\\\\n\")",
-      "Bash(yes \"n\")"
+      "Bash(yes \"n\")",
+      "Bash(npm install:*)",
+      "Bash(find /Users/chorongi/workspace/courses/starter-kit/node_modules/@schedule-x/react/dist/types -name *.d.ts)",
+      "Bash(ls /Users/chorongi/workspace/courses/starter-kit/src/components/ui/form*)",
+      "Bash(npm run:*)",
+      "Bash(ls:*)",
+      "Bash(find /Users/chorongi/workspace/courses/starter-kit/src/components -not -path */ui/* -type f)"
     ]
   }
 }
