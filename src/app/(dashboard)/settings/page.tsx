@@ -1,50 +1,48 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
-import { useCategories } from "@/hooks/use-events";
-import { saveCategories } from "@/lib/storage";
+import { useState } from "react";
+import { useCategories, useUpdateCategories, useClearEvents } from "@/hooks/use-events";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { siteConfig } from "@/config/site";
 import { toast } from "sonner";
-import type { EventCategory } from "@/types/event";
 
 export default function SettingsPage() {
   const { data: categories = [] } = useCategories();
-  const queryClient = useQueryClient();
+  const updateCategories = useUpdateCategories();
+  const clearEvents = useClearEvents();
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const handleColorChange = (id: string, color: string) => {
     const updated = categories.map((c) =>
       c.id === id ? { ...c, color } : c
     );
-    saveCategories(updated);
-    queryClient.invalidateQueries({ queryKey: ["categories"] });
+    updateCategories.mutate(updated);
   };
 
   const handleNameChange = (id: string, name: string) => {
     const updated = categories.map((c) =>
       c.id === id ? { ...c, name } : c
     );
-    saveCategories(updated);
-    queryClient.invalidateQueries({ queryKey: ["categories"] });
+    updateCategories.mutate(updated);
   };
 
   const handleVisibilityChange = (id: string, isVisible: boolean) => {
     const updated = categories.map((c) =>
       c.id === id ? { ...c, isVisible } : c
     );
-    saveCategories(updated);
-    queryClient.invalidateQueries({ queryKey: ["categories"] });
+    updateCategories.mutate(updated);
   };
 
   const handleClearEvents = () => {
-    localStorage.removeItem("calendar-events");
-    queryClient.invalidateQueries({ queryKey: ["events"] });
-    toast.success("모든 일정이 삭제되었습니다");
+    clearEvents.mutate(undefined, {
+      onSuccess: () => toast.success("모든 일정이 삭제되었습니다"),
+    });
+    setShowClearConfirm(false);
   };
 
   return (
@@ -61,8 +59,8 @@ export default function SettingsPage() {
             <div key={cat.id} className="flex items-center gap-4">
               <input
                 type="color"
-                value={cat.color}
-                onChange={(e) => handleColorChange(cat.id, e.target.value)}
+                defaultValue={cat.color}
+                onBlur={(e) => handleColorChange(cat.id, e.target.value)}
                 className="h-8 w-8 cursor-pointer rounded border-0 p-0"
               />
               <Input
@@ -94,7 +92,7 @@ export default function SettingsPage() {
           <p className="text-sm text-muted-foreground">
             모든 일정 데이터는 브라우저 localStorage에 저장됩니다.
           </p>
-          <Button variant="destructive" onClick={handleClearEvents}>
+          <Button variant="destructive" onClick={() => setShowClearConfirm(true)}>
             모든 일정 삭제
           </Button>
         </CardContent>
@@ -107,9 +105,19 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground space-y-1">
           <p>{siteConfig.name} — {siteConfig.description}</p>
-          <p>Next.js 15 + TailwindCSS v4 + ShadcnUI + Schedule-X</p>
+          <p>Next.js 16 + TailwindCSS v4 + ShadcnUI + Schedule-X</p>
         </CardContent>
       </Card>
+
+      <ConfirmDialog
+        open={showClearConfirm}
+        onOpenChange={setShowClearConfirm}
+        title="모든 일정 삭제"
+        description="모든 일정이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다."
+        onConfirm={handleClearEvents}
+        confirmLabel="삭제"
+        variant="destructive"
+      />
     </div>
   );
 }

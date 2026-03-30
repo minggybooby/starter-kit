@@ -8,7 +8,6 @@ import "@schedule-x/theme-default/dist/index.css";
 import { useTheme } from "next-themes";
 import { useCalendarStore } from "@/stores/calendar-store";
 import { useEvents, useCategories } from "@/hooks/use-events";
-import { format } from "date-fns";
 import type { CalendarEvent } from "@/types/event";
 
 // JS Date → Temporal.PlainDate 변환

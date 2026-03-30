@@ -1,17 +1,14 @@
 "use client";
 
-import { useCategories } from "@/hooks/use-events";
+import { useCategories, useToggleCategoryVisibility } from "@/hooks/use-events";
 import { Checkbox } from "@/components/ui/checkbox";
-import { toggleCategoryVisibility } from "@/lib/storage";
-import { useQueryClient } from "@tanstack/react-query";
 
 export function CategoryFilter() {
   const { data: categories = [] } = useCategories();
-  const queryClient = useQueryClient();
+  const toggleVisibility = useToggleCategoryVisibility();
 
   const handleToggle = (id: string) => {
-    toggleCategoryVisibility(id);
-    queryClient.invalidateQueries({ queryKey: ["categories"] });
+    toggleVisibility.mutate(id);
   };
 
   return (

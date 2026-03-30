@@ -9,7 +9,13 @@ const CATEGORIES_KEY = "calendar-categories";
 export function getEvents(): CalendarEvent[] {
   if (typeof window === "undefined") return [];
   const raw = localStorage.getItem(EVENTS_KEY);
-  return raw ? JSON.parse(raw) : [];
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw);
+  } catch {
+    localStorage.removeItem(EVENTS_KEY);
+    return [];
+  }
 }
 
 export function saveEvents(events: CalendarEvent[]) {
@@ -47,6 +53,10 @@ export function deleteEvent(id: string): boolean {
   return true;
 }
 
+export function clearEvents(): void {
+  localStorage.removeItem(EVENTS_KEY);
+}
+
 // --- 카테고리 CRUD ---
 
 export function getCategories(): EventCategory[] {
@@ -56,7 +66,13 @@ export function getCategories(): EventCategory[] {
     saveCategories(defaultCategories);
     return defaultCategories;
   }
-  return JSON.parse(raw);
+  try {
+    return JSON.parse(raw);
+  } catch {
+    localStorage.removeItem(CATEGORIES_KEY);
+    saveCategories(defaultCategories);
+    return defaultCategories;
+  }
 }
 
 export function saveCategories(categories: EventCategory[]) {

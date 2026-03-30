@@ -17,10 +17,10 @@ export function CalendarHeader() {
         오늘
       </Button>
       <div className="flex items-center">
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={navigatePrev}>
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={navigatePrev} aria-label="이전">
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={navigateNext}>
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={navigateNext} aria-label="다음">
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
@@ -30,8 +30,7 @@ export function CalendarHeader() {
       <ToggleGroup
         value={[viewType]}
         onValueChange={(values) => {
-          const newValue = values.find((v) => v !== viewType);
-          if (newValue) setViewType(newValue as CalendarViewType);
+          if (values.length > 0) setViewType(values[0] as CalendarViewType);
         }}
         className="ml-2"
       >

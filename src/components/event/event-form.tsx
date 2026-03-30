@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
@@ -55,6 +55,8 @@ export function EventForm({ defaultValues, onSubmit, onCancel, isLoading }: Even
       ...defaultValues,
     },
   });
+
+  const isAllDay = useWatch({ control: form.control, name: "isAllDay" });
 
   return (
     <Form {...form}>
@@ -119,7 +121,7 @@ export function EventForm({ defaultValues, onSubmit, onCancel, isLoading }: Even
                       }}
                       locale={ko}
                     />
-                    {!form.watch("isAllDay") && (
+                    {!isAllDay && (
                       <div className="border-t p-3">
                         <Input
                           type="time"
@@ -169,7 +171,7 @@ export function EventForm({ defaultValues, onSubmit, onCancel, isLoading }: Even
                       }}
                       locale={ko}
                     />
-                    {!form.watch("isAllDay") && (
+                    {!isAllDay && (
                       <div className="border-t p-3">
                         <Input
                           type="time"

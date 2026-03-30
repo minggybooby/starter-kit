@@ -2,9 +2,10 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as storage from "@/lib/storage";
-import type { CalendarEvent } from "@/types/event";
+import type { CalendarEvent, EventCategory } from "@/types/event";
 
 const EVENTS_KEY = ["events"];
+const CATEGORIES_KEY = ["categories"];
 
 // 전체 일정 조회
 export function useEvents() {
@@ -55,7 +56,45 @@ export function useDeleteEvent() {
 // 카테고리 조회
 export function useCategories() {
   return useQuery({
-    queryKey: ["categories"],
+    queryKey: CATEGORIES_KEY,
     queryFn: () => storage.getCategories(),
+  });
+}
+
+// 카테고리 전체 업데이트
+export function useUpdateCategories() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (categories: EventCategory[]) =>
+      Promise.resolve(storage.saveCategories(categories)),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CATEGORIES_KEY });
+    },
+  });
+}
+
+// 카테고리 가시성 토글
+export function useToggleCategoryVisibility() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) =>
+      Promise.resolve(storage.toggleCategoryVisibility(id)),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CATEGORIES_KEY });
+    },
+  });
+}
+
+// 전체 일정 삭제
+export function useClearEvents() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => Promise.resolve(storage.clearEvents()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EVENTS_KEY });
+    },
   });
 }

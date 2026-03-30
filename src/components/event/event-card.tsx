@@ -36,7 +36,7 @@ export function EventCard({ event, category, onEdit, onDelete }: EventCardProps)
           <div className="flex items-start justify-between gap-2">
             <h4 className="font-medium text-sm truncate">{event.title}</h4>
             <DropdownMenu>
-              <DropdownMenuTrigger className="inline-flex items-center justify-center h-6 w-6 rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent">
+              <DropdownMenuTrigger className="inline-flex items-center justify-center h-6 w-6 rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-accent" aria-label="일정 옵션">
                 <MoreVertical className="h-3 w-3" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
